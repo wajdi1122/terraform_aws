@@ -1,0 +1,75 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  subgraph "cluster_module.alb" {
+    label = "module.alb"
+    fontname = "sans-serif"
+    "module.alb.aws_lb.alb" [label="aws_lb.alb"];
+    "module.alb.aws_lb_listener.listener" [label="aws_lb_listener.listener"];
+    "module.alb.aws_lb_target_group.tg" [label="aws_lb_target_group.tg"];
+  }
+  subgraph "cluster_module.ecs" {
+    label = "module.ecs"
+    fontname = "sans-serif"
+    "module.ecs.aws_ecs_cluster.ecs_cluster" [label="aws_ecs_cluster.ecs_cluster"];
+    "module.ecs.aws_ecs_service.backend_service" [label="aws_ecs_service.backend_service"];
+    "module.ecs.aws_ecs_service.frontend_service" [label="aws_ecs_service.frontend_service"];
+    "module.ecs.aws_ecs_task_definition.backend_task" [label="aws_ecs_task_definition.backend_task"];
+    "module.ecs.aws_ecs_task_definition.frontend_task" [label="aws_ecs_task_definition.frontend_task"];
+    "module.ecs.aws_iam_role.task_exec_role" [label="aws_iam_role.task_exec_role"];
+  }
+  subgraph "cluster_module.rds" {
+    label = "module.rds"
+    fontname = "sans-serif"
+    "module.rds.aws_db_instance.rds_instance" [label="aws_db_instance.rds_instance"];
+    "module.rds.aws_db_subnet_group.rds_subnet_group" [label="aws_db_subnet_group.rds_subnet_group"];
+  }
+  subgraph "cluster_module.vpc" {
+    label = "module.vpc"
+    fontname = "sans-serif"
+    "module.vpc.aws_eip.nat_eip" [label="aws_eip.nat_eip"];
+    "module.vpc.aws_internet_gateway.igw" [label="aws_internet_gateway.igw"];
+    "module.vpc.aws_nat_gateway.nat" [label="aws_nat_gateway.nat"];
+    "module.vpc.aws_route_table.private_rt" [label="aws_route_table.private_rt"];
+    "module.vpc.aws_route_table.public_rt" [label="aws_route_table.public_rt"];
+    "module.vpc.aws_route_table_association.private_assoc" [label="aws_route_table_association.private_assoc"];
+    "module.vpc.aws_route_table_association.public_assoc" [label="aws_route_table_association.public_assoc"];
+    "module.vpc.aws_security_group.db_sg" [label="aws_security_group.db_sg"];
+    "module.vpc.aws_security_group.web_sg" [label="aws_security_group.web_sg"];
+    "module.vpc.aws_subnet.private" [label="aws_subnet.private"];
+    "module.vpc.aws_subnet.public" [label="aws_subnet.public"];
+    "module.vpc.aws_vpc.main" [label="aws_vpc.main"];
+  }
+  "module.alb.aws_lb.alb" -> "module.vpc.aws_security_group.web_sg";
+  "module.alb.aws_lb.alb" -> "module.vpc.aws_subnet.public";
+  "module.alb.aws_lb_listener.listener" -> "module.alb.aws_lb.alb";
+  "module.alb.aws_lb_listener.listener" -> "module.alb.aws_lb_target_group.tg";
+  "module.alb.aws_lb_target_group.tg" -> "module.vpc.aws_vpc.main";
+  "module.ecs.aws_ecs_service.backend_service" -> "module.ecs.aws_ecs_cluster.ecs_cluster";
+  "module.ecs.aws_ecs_service.backend_service" -> "module.ecs.aws_ecs_task_definition.backend_task";
+  "module.ecs.aws_ecs_service.frontend_service" -> "module.alb.aws_lb_target_group.tg";
+  "module.ecs.aws_ecs_service.frontend_service" -> "module.ecs.aws_ecs_cluster.ecs_cluster";
+  "module.ecs.aws_ecs_service.frontend_service" -> "module.ecs.aws_ecs_task_definition.frontend_task";
+  "module.ecs.aws_ecs_service.frontend_service" -> "module.vpc.aws_security_group.web_sg";
+  "module.ecs.aws_ecs_service.frontend_service" -> "module.vpc.aws_subnet.public";
+  "module.ecs.aws_ecs_task_definition.backend_task" -> "module.ecs.aws_iam_role.task_exec_role";
+  "module.ecs.aws_ecs_task_definition.backend_task" -> "module.rds.aws_db_instance.rds_instance";
+  "module.ecs.aws_ecs_task_definition.frontend_task" -> "module.ecs.aws_iam_role.task_exec_role";
+  "module.rds.aws_db_instance.rds_instance" -> "module.rds.aws_db_subnet_group.rds_subnet_group";
+  "module.rds.aws_db_instance.rds_instance" -> "module.vpc.aws_security_group.db_sg";
+  "module.rds.aws_db_subnet_group.rds_subnet_group" -> "module.vpc.aws_subnet.private";
+  "module.vpc.aws_internet_gateway.igw" -> "module.vpc.aws_vpc.main";
+  "module.vpc.aws_nat_gateway.nat" -> "module.vpc.aws_eip.nat_eip";
+  "module.vpc.aws_nat_gateway.nat" -> "module.vpc.aws_internet_gateway.igw";
+  "module.vpc.aws_nat_gateway.nat" -> "module.vpc.aws_subnet.public";
+  "module.vpc.aws_route_table.private_rt" -> "module.vpc.aws_nat_gateway.nat";
+  "module.vpc.aws_route_table.public_rt" -> "module.vpc.aws_internet_gateway.igw";
+  "module.vpc.aws_route_table_association.private_assoc" -> "module.vpc.aws_route_table.private_rt";
+  "module.vpc.aws_route_table_association.private_assoc" -> "module.vpc.aws_subnet.private";
+  "module.vpc.aws_route_table_association.public_assoc" -> "module.vpc.aws_route_table.public_rt";
+  "module.vpc.aws_route_table_association.public_assoc" -> "module.vpc.aws_subnet.public";
+  "module.vpc.aws_security_group.db_sg" -> "module.vpc.aws_security_group.web_sg";
+  "module.vpc.aws_security_group.web_sg" -> "module.vpc.aws_vpc.main";
+  "module.vpc.aws_subnet.private" -> "module.vpc.aws_vpc.main";
+  "module.vpc.aws_subnet.public" -> "module.vpc.aws_vpc.main";
+}

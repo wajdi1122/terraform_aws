@@ -13,16 +13,19 @@ module "alb" {
   subnets             = module.vpc.public_subnet_ids
   vpc_id              = module.vpc.vpc_id
   security_group_id   = module.vpc.web_sg_id
+  listener_arn = module.alb.alb_listener_arn
+
 }
 
 module "ecs" {
   source                      = "./modules/ecs"
   container_image             = var.container_image
-   private_subnets = module.vpc.private_subnet_ids  # Liste complète
-  public_subnets  = module.vpc.public_subnet_ids   # Liste complète
+  private_subnets = module.vpc.private_subnet_ids  
+  public_subnets  = module.vpc.public_subnet_ids   
   security_group_id           = module.vpc.web_sg_id
   frontend_target_group_arn   = module.alb.target_group_arn
   db_host                     = module.rds.db_endpoint
+  vpc_id                      = module.vpc.vpc_id
 
 }
 

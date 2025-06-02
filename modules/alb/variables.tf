@@ -12,3 +12,8 @@ variable "security_group_id" {
   description = "ID du Security Group pour le Load Balancer"
   type        = string
 }
+
+variable "listener_arn" {
+  description = "ARN du listener de l'ALB"
+  type        = string
+}

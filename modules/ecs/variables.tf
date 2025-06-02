@@ -1,3 +1,8 @@
+variable "vpc_id" {
+  description = "L id du reseau"
+  type = string
+}
+
 variable "public_subnets" {
   description = "List of public subnet IDs"
   type        = list(string)
@@ -23,3 +28,4 @@ variable "db_host" {
 variable "container_image" {
   type = string
 }
+

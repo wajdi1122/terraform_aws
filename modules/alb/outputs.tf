@@ -12,3 +12,7 @@ output "alb_arn" {
   description = "ARN du Load Balancer"
   value       = aws_lb.alb.arn
 }
+
+output "alb_listener_arn" {
+  value = aws_lb_listener.listener.arn
+}

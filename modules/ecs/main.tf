@@ -5,6 +5,11 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   tags = {
     Name = "iovision-cluster"
   }
+  configuration {
+    execute_command_configuration {
+      logging = "DEFAULT"
+    }
+  }
 }
 
 # IAM Role pour ECS Task Execution
@@ -22,3 +27,4 @@ resource "aws_iam_role" "task_exec_role" {
     }]
   })
 }
+

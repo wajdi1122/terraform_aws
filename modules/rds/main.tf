@@ -10,8 +10,8 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 resource "aws_db_instance" "rds_instance" {
   identifier              = "iovision-db"
   allocated_storage       = 20
-  engine                  = "mysql"
-  engine_version          = "8.0"
+  engine                  = "postgres"
+  engine_version          = "15"
   instance_class          = "db.t3.micro"
   username                = var.db_username
   password                = var.db_password

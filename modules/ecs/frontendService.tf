@@ -8,11 +8,14 @@ resource "aws_ecs_task_definition" "frontend_task" {
 
   container_definitions = jsonencode([{
     name  = "frontend"
-    image = "wajdi1999/frontend-app:latest"
+    image = "wajdi1999/frontend:latest"
     portMappings = [{
       containerPort = 80
       hostPort      = 80
     }]
+    environment = [
+    { name = "API_URL", value = "http://${var.alb_dns_name}:8080/api/employees"  },
+  ]
   }])
 }
 
@@ -31,7 +34,7 @@ resource "aws_ecs_service" "frontend_service" {
 
   network_configuration {
     assign_public_ip = true
-    subnets          = var.public_subnets  # Assurez-vous que cette variable est définie
+    subnets          = var.public_subnets  
     security_groups  = [var.security_group_id]
   }
 }

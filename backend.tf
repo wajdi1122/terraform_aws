@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "iovision-bucket"
-    key    = "env/dev/terraform.tfstate"
-    region = "us-east-1"
+    bucket = "iovision-terraform-state"
+    key    = "env/test/terraform.tfstate"
+    region = "eu-north-1"
   }
 }

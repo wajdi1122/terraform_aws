@@ -40,7 +40,7 @@ variable "container_image" {
 variable "db_username" {
   description = "Username for the RDS instance"
   type        = string
-  default     = "admin"
+  default = "postgres"
 }
 
 variable "db_password" {
@@ -62,5 +62,9 @@ variable "security_group_id" {
   type = string
 }
 variable "db_host" {
+  type = string
+}
+
+variable "queue_name" {
   type = string
 }

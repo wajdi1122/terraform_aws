@@ -26,14 +26,21 @@ module "ecs" {
   frontend_target_group_arn   = module.alb.target_group_arn
   db_host                     = module.rds.db_endpoint
   vpc_id                      = module.vpc.vpc_id
-
+  alb_dns_name                = module.alb.alb_dns_name
+  queue_url                   = module.event_logs_queue.queue_url
 }
 
 
 module "rds" {
   source             = "./modules/rds"
-  subnet_ids = module.vpc.private_subnet_ids  # Liste complète
+  subnet_ids         = module.vpc.private_subnet_ids  # Liste complète
   security_group_id  = module.vpc.db_sg_id
   db_username        = var.db_username
   db_password        = var.db_password
+}
+
+
+module "event_logs_queue" {
+  source     = "./modules/sqs"
+  queue_name = var.queue_name
 }

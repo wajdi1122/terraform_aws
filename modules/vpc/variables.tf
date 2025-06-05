@@ -47,29 +47,3 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "db_endpoint" {
-  description = "RDS endpoint URL"
-  type        = string
-}
-
-variable "backend_image" {
-  description = "ECR image URL for backend"
-  type        = string
-  default     = "wajdi1999/back-end-app:latest"
-}
-
-variable "additional_env_vars" {
-  description = "Additional environment variables for ECS"
-  type        = list(map(string))
-  default     = []
-}
-
-variable "ecs_security_group_id" {
-  description = "Security group ID for ECS tasks"
-  type        = string
-}
-
-variable "rds_security_group_id" {
-  description = "Security group ID for RDS"
-  type        = string
-}

@@ -6,6 +6,7 @@ module "vpc" {
   availability_zone_public  = ["eu-north-1a", "eu-north-1b"]
   availability_zone_private = ["eu-north-1a", "eu-north-1b"]
   db_password          = var.db_password
+
 }
 
 module "alb" {
@@ -29,7 +30,6 @@ module "ecs" {
   alb_dns_name                = module.alb.alb_dns_name
   queue_url                   = module.event_logs_queue.queue_url
 }
-
 
 module "rds" {
   source             = "./modules/rds"
